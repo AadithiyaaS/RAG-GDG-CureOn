@@ -21,7 +21,7 @@ def retrieve(query, k=4):
 def build_prompt(query, context):
     return f"""
 Answer the question using ONLY the context below.
-If the answer is not present, say "I don't know".
+If the answer is not present, say "Consult expert.".
 
 Context:
 {context}

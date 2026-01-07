@@ -1,31 +1,28 @@
-# Use slim Python base for FAISS compatibility and small image
+# Slim Python base
 FROM python:3.10-slim
 
 # Set working directory
 WORKDIR /app
 
-# Install build tools for FAISS and git
+# Install system dependencies needed for faiss
 RUN apt-get update && \
     apt-get install -y build-essential git && \
     rm -rf /var/lib/apt/lists/*
 
-# Copy requirements and install Python packages without cache
+# Copy requirements first (for Docker cache)
 COPY requirements.txt .
+
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy only necessary app files
-COPY app/rag.py /app/app/rag.py
-COPY app/rag_service.py /app/app/rag_service.py
-COPY app/config.py /app/app/config.py
+# Copy the entire app package
+COPY app /app/app
 
-# Copy pre-downloaded MiniLM model
-COPY app/local_model /app/app/local_model
+# Copy vector store + texts
+COPY data /app/data
 
-# Copy FAISS vector data
-COPY data/ /app/data/
-
-# Set environment variable for data
+# Environment variable for data path
 ENV DATA_DIR=/app/data
 
-# Start FastAPI server
-CMD ["uvicorn", "app.rag_service:app", "--host", "0.0.0.0", "--port", "8000"]
+# IMPORTANT: use Render's dynamic PORT
+CMD ["sh", "-c", "uvicorn app.rag_service:app --host 0.0.0.0 --port ${PORT:-8000}"]
