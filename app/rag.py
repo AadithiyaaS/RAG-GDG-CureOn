@@ -8,7 +8,7 @@ index = faiss.read_index(VECTOR_INDEX_PATH)
 texts = np.load(TEXT_STORE_PATH, allow_pickle=True)
 
 # Load embedding model
-model = SentenceTransformer(LOCAL_EMBEDDING_MODEL)
+model = SentenceTransformer("app/local_model")
 
 def embed_query(query):
     return model.encode([query], convert_to_numpy=True).astype("float32")[0]
