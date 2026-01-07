@@ -1,7 +1,7 @@
 import faiss
 import numpy as np
 from sentence_transformers import SentenceTransformer
-from config import *
+from app.config import *
 
 # Load vector store ONCE at startup
 index = faiss.read_index(VECTOR_INDEX_PATH)
